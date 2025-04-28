@@ -1,0 +1,492 @@
+{
+  "COUNTY": {
+    "type": "enum",
+    "count": 63,
+    "maxval": 1250
+  },
+  "URBAN": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "METRO": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 3
+  },
+  "METAREA": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 656
+  },
+  "METAREAD": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 6560
+  },
+  "CITY": {
+    "type": "enum",
+    "count": 9,
+    "maxval": 9999
+  },
+  "CITYPOP": {
+    "type": "enum",
+    "count": 50,
+    "maxval": 3224
+  },
+  "SIZEPL": {
+    "type": "enum",
+    "count": 9,
+    "maxval": 30
+  },
+  "URBPOP": {
+    "type": "enum",
+    "count": 26,
+    "maxval": 3224
+  },
+  "SEA": {
+    "type": "enum",
+    "count": 6,
+    "maxval": 53
+  },
+  "WARD": {
+    "type": "enum",
+    "count": 6,
+    "maxval": 5
+  },
+  "GQ": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 6
+  },
+  "GQTYPE": {
+    "type": "enum",
+    "count": 7,
+    "maxval": 9
+  },
+  "GQTYPED": {
+    "type": "enum",
+    "count": 45,
+    "maxval": 999
+  },
+  "GQFUNDS": {
+    "type": "enum",
+    "count": 10,
+    "maxval": 99
+  },
+  "FARM": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "OWNERSHP": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 2
+  },
+  "OWNERSHPD": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 20
+  },
+  "RENT": {
+    "type": "enum",
+    "count": 271,
+    "maxval": 9999
+  },
+  "VALUEH": {
+    "type": "enum",
+    "count": 834,
+    "maxval": 9999999
+  },
+  "ENUMDIST": {
+    "type": "enum",
+    "count": 427,
+    "maxval": 3020
+  },
+  "SUPDIST": {
+    "type": "enum",
+    "count": 63,
+    "maxval": 630
+  },
+  "SPLIT": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 1
+  },
+  "SLREC": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "RESPONDT": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 2
+  },
+  "FAMSIZE": {
+    "type": "enum",
+    "count": 18,
+    "maxval": 21
+  },
+  "NCHLT5": {
+    "type": "enum",
+    "count": 7,
+    "maxval": 6
+  },
+  "SEX": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "AGE": {
+    "type": "enum",
+    "count": 104,
+    "maxval": 108
+  },
+  "AGEMONTH": {
+    "type": "enum",
+    "count": 13,
+    "maxval": 99
+  },
+  "MARST": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 6
+  },
+  "MARRNO": {
+    "type": "enum",
+    "count": 4,
+    "maxval": 9
+  },
+  "AGEMARR": {
+    "type": "enum",
+    "count": 47,
+    "maxval": 89
+  },
+  "CHBORN": {
+    "type": "enum",
+    "count": 22,
+    "maxval": 99
+  },
+  "RACE": {
+    "type": "enum",
+    "count": 6,
+    "maxval": 6
+  },
+  "RACED": {
+    "type": "enum",
+    "count": 11,
+    "maxval": 620
+  },
+  "HISPAN": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 4
+  },
+  "HISPAND": {
+    "type": "enum",
+    "count": 21,
+    "maxval": 480
+  },
+  "BPL": {
+    "type": "enum",
+    "count": 119,
+    "maxval": 900
+  },
+  "BPLD": {
+    "type": "enum",
+    "count": 239,
+    "maxval": 90021
+  },
+  "MBPL": {
+    "type": "enum",
+    "count": 113,
+    "maxval": 900
+  },
+  "MBPLD": {
+    "type": "enum",
+    "count": 192,
+    "maxval": 90020
+  },
+  "FBPL": {
+    "type": "enum",
+    "count": 114,
+    "maxval": 900
+  },
+  "FBPLD": {
+    "type": "enum",
+    "count": 197,
+    "maxval": 90020
+  },
+  "NATIVITY": {
+    "type": "enum",
+    "count": 6,
+    "maxval": 5
+  },
+  "CITIZEN": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 4
+  },
+  "MTONGUE": {
+    "type": "enum",
+    "count": 35,
+    "maxval": 96
+  },
+  "MTONGUED": {
+    "type": "enum",
+    "count": 50,
+    "maxval": 9601
+  },
+  "SPANNAME": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "HISPRULE": {
+    "type": "enum",
+    "count": 8,
+    "maxval": 8
+  },
+  "SCHOOL": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "HIGRADE": {
+    "type": "enum",
+    "count": 23,
+    "maxval": 99
+  },
+  "HIGRADED": {
+    "type": "enum",
+    "count": 23,
+    "maxval": 999
+  },
+  "EDUC": {
+    "type": "enum",
+    "count": 13,
+    "maxval": 99
+  },
+  "EDUCD": {
+    "type": "enum",
+    "count": 23,
+    "maxval": 999
+  },
+  "EMPSTAT": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 3
+  },
+  "EMPSTATD": {
+    "type": "enum",
+    "count": 11,
+    "maxval": 34
+  },
+  "LABFORCE": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 2
+  },
+  "OCC": {
+    "type": "enum",
+    "count": 228,
+    "maxval": 998
+  },
+  "OCC1950": {
+    "type": "enum",
+    "count": 214,
+    "maxval": 999
+  },
+  "IND": {
+    "type": "enum",
+    "count": 133,
+    "maxval": 999
+  },
+  "IND1950": {
+    "type": "enum",
+    "count": 121,
+    "maxval": 997
+  },
+  "CLASSWKR": {
+    "type": "enum",
+    "count": 4,
+    "maxval": 9
+  },
+  "CLASSWKRD": {
+    "type": "enum",
+    "count": 8,
+    "maxval": 98
+  },
+  "WKSWORK1": {
+    "type": "enum",
+    "count": 53,
+    "maxval": 52
+  },
+  "WKSWORK2": {
+    "type": "enum",
+    "count": 7,
+    "maxval": 6
+  },
+  "HRSWORK1": {
+    "type": "enum",
+    "count": 99,
+    "maxval": 98
+  },
+  "HRSWORK2": {
+    "type": "enum",
+    "count": 9,
+    "maxval": 8
+  },
+  "DURUNEMP": {
+    "type": "enum",
+    "count": 472,
+    "maxval": 999
+  },
+  "UOCC": {
+    "type": "enum",
+    "count": 215,
+    "maxval": 999
+  },
+  "UOCC95": {
+    "type": "enum",
+    "count": 205,
+    "maxval": 999
+  },
+  "UIND": {
+    "type": "enum",
+    "count": 123,
+    "maxval": 999
+  },
+  "UCLASSWK": {
+    "type": "enum",
+    "count": 8,
+    "maxval": 8
+  },
+  "INCWAGE": {
+    "type": "enum",
+    "count": 3314,
+    "maxval": 999998
+  },
+  "INCNONWG": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 9
+  },
+  "OCCSCORE": {
+    "type": "enum",
+    "count": 50,
+    "maxval": 80
+  },
+  "SEI": {
+    "type": "enum",
+    "count": 83,
+    "maxval": 96
+  },
+  "PRESGL": {
+    "type": "enum",
+    "count": 170,
+    "maxval": 815
+  },
+  "ERSCOR50": {
+    "type": "enum",
+    "count": 155,
+    "maxval": 9999
+  },
+  "EDSCOR50": {
+    "type": "enum",
+    "count": 154,
+    "maxval": 9999
+  },
+  "NPBOSS50": {
+    "type": "enum",
+    "count": 186,
+    "maxval": 9999
+  },
+  "MIGRATE5": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 9
+  },
+  "MIGRATE5D": {
+    "type": "enum",
+    "count": 8,
+    "maxval": 90
+  },
+  "MIGPLAC5": {
+    "type": "enum",
+    "count": 95,
+    "maxval": 999
+  },
+  "MIGMET5": {
+    "type": "enum",
+    "count": 139,
+    "maxval": 9999
+  },
+  "MIGTYPE5": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 9
+  },
+  "MIGCITY5": {
+    "type": "enum",
+    "count": 512,
+    "maxval": 9999
+  },
+  "MIGSEA5": {
+    "type": "enum",
+    "count": 461,
+    "maxval": 997
+  },
+  "SAMEPLAC": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 9
+  },
+  "SAMESEA5": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 9
+  },
+  "MIGCOUNTY": {
+    "type": "enum",
+    "count": 243,
+    "maxval": 9999
+  },
+  "VETSTAT": {
+    "type": "enum",
+    "count": 4,
+    "maxval": 9
+  },
+  "VETSTATD": {
+    "type": "enum",
+    "count": 4,
+    "maxval": 99
+  },
+  "VET1940": {
+    "type": "enum",
+    "count": 4,
+    "maxval": 8
+  },
+  "VETWWI": {
+    "type": "enum",
+    "count": 2,
+    "maxval": 2
+  },
+  "VETPER": {
+    "type": "enum",
+    "count": 8,
+    "maxval": 8
+  },
+  "VETCHILD": {
+    "type": "enum",
+    "count": 5,
+    "maxval": 9
+  },
+  "SSENROLL": {
+    "type": "enum",
+    "count": 3,
+    "maxval": 2
+  }
+}

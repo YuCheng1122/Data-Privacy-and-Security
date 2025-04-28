@@ -1,11 +1,11 @@
 from mechanism import Mechanism
 import mbi
-from mbi import Domain, Factor, FactoredInference, GraphicalModel, Dataset
+from mbi import Domain, Factor, Dataset
 import matrix
 import argparse
 import numpy as np
 from scipy import sparse, optimize
-from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp, get_privacy_spent
+from privacy.research.hyperparameters_2022.rdp_accountant import compute_rdp, get_privacy_spent
 from functools import reduce
 import os
 
@@ -93,41 +93,42 @@ class Match3(Mechanism):
 
         self.round2 += [('SEX', 'CITY'), ('SEX', 'CITY', 'INCWAGE_A'), ('INCWAGE_A', 'INCWAGE_B')]
         self.round2 += [('SUPDIST', 'ENUMDIST'), ('SUPDIST', 'FARM'), ('ENUMDIST', 'WARD'), ('EMPSTATD', 'MARST'), ('EMPSTATD', 'HIGRADED'), ('EMPSTATD', 'RESPONDT'), ('MARST', 'NCHLT5'), ('MARST', 'MBPLD'), ('AGE', 'EMPSTATD', 'MARST'), ('AGE', 'EMPSTATD', 'HIGRADED'), ('AGE', 'EMPSTATD', 'RESPONDT'), ('AGE', 'MARST', 'NCHLT5'), ('AGE', 'MARST', 'MBPLD'), ('AGE', 'FAMSIZE'), ('MARST', 'AGE', 'FAMSIZE'), ('FBPLD', 'AGE'), ('AGE', 'BPLD'), ('MBPLD', 'FBPLD', 'AGE'), ('MBPLD', 'AGE', 'BPLD'), ('LABFORCE', 'AGE'), ('AGE', 'OCC'), ('OCC', 'HRSWORK1'), ('EMPSTATD', 'LABFORCE', 'AGE'), ('EMPSTATD', 'AGE', 'OCC'), ('EMPSTATD', 'OCC', 'HRSWORK1'), ('IND', 'INCWAGE_A'), ('CLASSWKRD', 'INCWAGE_A'), ('EMPSTATD', 'INCWAGE_A'), ('OCC', 'IND', 'INCWAGE_A'), ('OCC', 'CLASSWKRD', 'INCWAGE_A'), ('OCC', 'EMPSTATD', 'INCWAGE_A'), ('SEX', 'OCC'), ('CITY', 'OCC'), ('OCC', 'WKSWORK1'), ('OCC', 'INCNONWG'), ('INCWAGE_A', 'SEX', 'OCC'), ('INCWAGE_A', 'CITY', 'OCC'), ('INCWAGE_A', 'OCC', 'WKSWORK1'), ('INCWAGE_A', 'OCC', 'INCNONWG'), ('MIGMET5', 'COUNTY'), ('COUNTY', 'MIGCITY5'), ('COUNTY', 'MIGCOUNTY'), ('MIGPLAC5', 'MIGCOUNTY'), ('MIGSEA5', 'MIGMET5', 'COUNTY'), ('MIGSEA5', 'COUNTY', 'MIGCITY5'), ('MIGSEA5', 'COUNTY', 'MIGCOUNTY'), ('MIGSEA5', 'MIGPLAC5', 'MIGCOUNTY')]
-                                        
+    
     def measure(self):
+        """為 Adult 數據集定制的 measure 方法，移除了 Colorado 數據集相關的特定處理"""
         data = self.load_data()
-        # round1 and round2 measurements will be weighted to have L2 sensitivity 1
+        # 使用隱私預算計算適當的噪聲水平
         sigma = moments_calibration(1.0, 1.0, self.epsilon, self.delta)
         print('NOISE LEVEL:', sigma)
 
+        # 設置權重使 L2 敏感度為 1
         weights = np.ones(len(self.round1))
-        weights[self.round1.index('INCWAGE_A')] *= 2.0
-        weights /= np.linalg.norm(weights) # now has L2 norm = 1
+        # 不再處理 'INCWAGE_A'
+        weights /= np.linalg.norm(weights)  # 現在 L2 範數 = 1
 
         supports = {}
   
         self.measurements = []
+        # 對每個屬性進行一階邊際查詢
         for col, wgt in zip(self.round1, weights):
             ##########################
-            ### Noise-addition step ##
+            ### 噪聲添加步驟 ##########
             ##########################
             proj = (col,)
             hist = data.project(proj).datavector()
-            noise = sigma*np.random.randn(hist.size)
-            y = wgt*hist + noise
+            noise = sigma * np.random.randn(hist.size)
+            y = wgt * hist + noise
           
             #####################
-            ## Post-processing ##
+            ## 後處理步驟 #######
             #####################
-
-            if col in ['INCWAGE_A', 'SEA', 'METAREA', 'COUNTY', 'CITY', 'METAREAD']:
-                sup = np.ones(y.size, dtype=bool)
-            else:
-                sup = y >= 3*sigma
+            # 所有列都用標準閾值處理
+            sup = y >= 3 * sigma
 
             supports[col] = sup
-            print(col, self.domain.size(col), sup.sum())
+            print(f"{col}: 域大小={self.domain.size(col)}, 支持集大小={sup.sum()}")
 
+            # 構建測量矩陣
             if sup.sum() == y.size:
                 y2 = y
                 I2 = matrix.Identity(y.size)
@@ -138,39 +139,32 @@ class Match3(Mechanism):
                 y2[-1] /= np.sqrt(y.size - y2.size + 1.0)
                 I2 = sparse.diags(I2)
 
-            self.measurements.append( (I2, y2/wgt, 1.0/wgt, proj) )
+            self.measurements.append((I2, y2/wgt, 1.0/wgt, proj))
 
         self.supports = supports 
-        # perform round 2 measurments over compressed domain
+        # 在壓縮域上執行二階查詢
         data = transform_data(data, supports)
         self.domain = data.domain
 
+        # 過濾掉太大的查詢
         self.round2 = [cl for cl in self.round2 if self.domain.size(cl) < 1e6]
         weights = np.ones(len(self.round2))
-        weights[self.round2.index(('SEX','CITY','INCWAGE_A'))] *= self.weight3
-        weights[self.round2.index(('SEX','CITY'))] *= 2.0
-        weights[self.round2.index(('SEX','INCWAGE_A'))] *= 2.0
-        weights[self.round2.index(('CITY','INCWAGE_A'))] *= 2.0
-        weights /= np.linalg.norm(weights) # now has L2 norm = 1
+        # 不再為特定查詢設置特殊權重
+        weights /= np.linalg.norm(weights)  # 現在 L2 範數 = 1
    
+        # 執行二階和三階查詢
         for proj, wgt in zip(self.round2, weights):
             #########################
-            ## Noise-addition step ##
+            ## 噪聲添加步驟 #########
             #########################
             hist = data.project(proj).datavector()
-            if proj == ('SEX', 'CITY', 'INCWAGE_A'):
-                dom = self.domain.project(proj).shape
-                I = sparse.eye(dom[0] * dom[1])
-                Q = sparse.kron(I, self.Q_INCWAGE).tocsr()
-            elif proj == ('CITY', 'INCWAGE_A'):
-                I = sparse.eye(self.domain.size('CITY'))
-                Q = sparse.kron(I, self.Q_INCWAGE).tocsr()
-            else: 
-                Q = matrix.Identity(hist.size)
-
-            noise = sigma*np.random.randn(Q.shape[0])
-            y = wgt*Q.dot(hist) + noise
-            self.measurements.append( (Q, y/wgt, 1.0/wgt, proj) )
+            # 對所有查詢使用標準恆等矩陣
+            Q = matrix.Identity(hist.size)
+            noise = sigma * np.random.randn(Q.shape[0])
+            y = wgt * Q.dot(hist) + noise
+            self.measurements.append((Q, y/wgt, 1.0/wgt, proj))
+            
+        print(f"測量完成，總共生成了 {len(self.measurements)} 個測量結果")
 
     def postprocess(self):
         iters = self.iters
@@ -217,7 +211,86 @@ class Match3(Mechanism):
 
         self.synthetic = engine.model.synthetic_data()
         self.synthetic = reverse_data(self.synthetic, self.supports)
+                         
+    # def measure(self):
+    #     data = self.load_data()
+    #     # round1 and round2 measurements will be weighted to have L2 sensitivity 1
+    #     sigma = moments_calibration(1.0, 1.0, self.epsilon, self.delta)
+    #     print('NOISE LEVEL:', sigma)
 
+    #     weights = np.ones(len(self.round1))
+    #     weights[self.round1.index('INCWAGE_A')] *= 2.0
+    #     weights /= np.linalg.norm(weights) # now has L2 norm = 1
+
+    #     supports = {}
+  
+    #     self.measurements = []
+    #     for col, wgt in zip(self.round1, weights):
+    #         ##########################
+    #         ### Noise-addition step ##
+    #         ##########################
+    #         proj = (col,)
+    #         hist = data.project(proj).datavector()
+    #         noise = sigma*np.random.randn(hist.size)
+    #         y = wgt*hist + noise
+          
+    #         #####################
+    #         ## Post-processing ##
+    #         #####################
+
+    #         if col in ['INCWAGE_A', 'SEA', 'METAREA', 'COUNTY', 'CITY', 'METAREAD']:
+    #             sup = np.ones(y.size, dtype=bool)
+    #         else:
+    #             sup = y >= 3*sigma
+
+    #         supports[col] = sup
+    #         print(col, self.domain.size(col), sup.sum())
+
+    #         if sup.sum() == y.size:
+    #             y2 = y
+    #             I2 = matrix.Identity(y.size)
+    #         else:
+    #             y2 = np.append(y[sup], y[~sup].sum())
+    #             I2 = np.ones(y2.size)
+    #             I2[-1] = 1.0 / np.sqrt(y.size - y2.size + 1.0)
+    #             y2[-1] /= np.sqrt(y.size - y2.size + 1.0)
+    #             I2 = sparse.diags(I2)
+
+    #         self.measurements.append( (I2, y2/wgt, 1.0/wgt, proj) )
+
+    #     self.supports = supports 
+    #     # perform round 2 measurments over compressed domain
+    #     data = transform_data(data, supports)
+    #     self.domain = data.domain
+
+    #     self.round2 = [cl for cl in self.round2 if self.domain.size(cl) < 1e6]
+    #     weights = np.ones(len(self.round2))
+    #     weights[self.round2.index(('SEX','CITY','INCWAGE_A'))] *= self.weight3
+    #     weights[self.round2.index(('SEX','CITY'))] *= 2.0
+    #     weights[self.round2.index(('SEX','INCWAGE_A'))] *= 2.0
+    #     weights[self.round2.index(('CITY','INCWAGE_A'))] *= 2.0
+    #     weights /= np.linalg.norm(weights) # now has L2 norm = 1
+   
+    #     for proj, wgt in zip(self.round2, weights):
+    #         #########################
+    #         ## Noise-addition step ##
+    #         #########################
+    #         hist = data.project(proj).datavector()
+    #         if proj == ('SEX', 'CITY', 'INCWAGE_A'):
+    #             dom = self.domain.project(proj).shape
+    #             I = sparse.eye(dom[0] * dom[1])
+    #             Q = sparse.kron(I, self.Q_INCWAGE).tocsr()
+    #         elif proj == ('CITY', 'INCWAGE_A'):
+    #             I = sparse.eye(self.domain.size('CITY'))
+    #             Q = sparse.kron(I, self.Q_INCWAGE).tocsr()
+    #         else: 
+    #             Q = matrix.Identity(hist.size)
+
+    #         noise = sigma*np.random.randn(Q.shape[0])
+    #         y = wgt*Q.dot(hist) + noise
+    #         self.measurements.append( (Q, y/wgt, 1.0/wgt, proj) )
+
+    
 def default_params():
     """
     Return default parameters to run this program

@@ -1,0 +1,62 @@
+{
+    "workclass": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 8
+    },
+    "education": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 15
+    },
+    "education-num": {
+      "type": "int",
+      "minval": 1,
+      "maxval": 16
+    },
+    "marital-status": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 6
+    },
+    "occupation": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 14
+    },
+    "relationship": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 5
+    },
+    "race": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 4
+    },
+    "sex": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 1
+    },
+    "native-country": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 41
+    },
+    "income": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 1
+    },
+    "age_bin": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 4
+    },
+    "hours_bin": {
+      "type": "int",
+      "minval": 0,
+      "maxval": 4
+    }
+  }
